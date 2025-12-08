@@ -10,7 +10,7 @@ public class TicketVoyageApp extends JFrame {
     private JTextField searchToField;
     private JTextField searchDateField;
     private JPanel routesPanel;
-    private ButtonGroup filterGroup;
+    //private ButtonGroup filterGroup;
     private JToggleButton priceFilterBtn;
     private JToggleButton timeFilterBtn;
     private JToggleButton durationFilterBtn;
