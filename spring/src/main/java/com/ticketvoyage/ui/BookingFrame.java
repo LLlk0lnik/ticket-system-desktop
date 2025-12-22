@@ -132,7 +132,7 @@ public class BookingFrame extends JFrame {
         legendPanel.setBackground(Color.WHITE);
         
         JPanel freeLegend = createLegendItem(new Color(219, 234, 254), new Color(37, 99, 235), "Свободно");
-        JPanel selectedLegend = createLegendItem(new Color(37, 99, 235), Color.WHITE, "Выбрано");
+        JPanel selectedLegend = createLegendItem(new Color(37, 99, 235), new Color(17, 24, 39), "Выбрано");
         JPanel occupiedLegend = createLegendItem(new Color(229, 231, 235), new Color(107, 114, 128), "Занято");
         
         legendPanel.add(freeLegend);

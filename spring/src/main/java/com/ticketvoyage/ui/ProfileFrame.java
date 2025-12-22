@@ -19,22 +19,22 @@ public class ProfileFrame extends JFrame {
     }
     
     private void initializeUI() {
-        setTitle("TicketVoyage - Мои билеты");
+        setTitle("TicketVoyage - Все билеты");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 700);
         setLocationRelativeTo(null);
-        
+
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(249, 250, 251));
-        
+
         JPanel navBar = createNavigationBar();
         mainPanel.add(navBar, BorderLayout.NORTH);
-        
+
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(new Color(249, 250, 251));
         contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
-        JLabel title = new JLabel("Мои билеты");
+
+        JLabel title = new JLabel("Все билеты");
         title.setFont(new Font("SansSerif", Font.BOLD, 24));
         title.setForeground(new Color(17, 24, 39));
         contentPanel.add(title, BorderLayout.NORTH);
@@ -62,7 +62,7 @@ public class ProfileFrame extends JFrame {
         leftPanel.add(logo);
         
         JButton searchBtn = createNavButton("Поиск билетов", false);
-        JButton ticketsBtn = createNavButton("Мои билеты", true);
+        JButton ticketsBtn = createNavButton("Все билеты", true);
         
         leftPanel.add(searchBtn);
         leftPanel.add(ticketsBtn);
@@ -121,11 +121,11 @@ public class ProfileFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(new Color(249, 250, 251));
-        
-        List<Ticket> userTickets = dataService.getUserTickets(authService.getCurrentUser().getId());
-        
-        if (userTickets.isEmpty()) {
-            JLabel noTicketsLabel = new JLabel("У вас пока нет забронированных билетов");
+
+        List<Ticket> allTickets = dataService.getAllTickets();
+
+        if (allTickets.isEmpty()) {
+            JLabel noTicketsLabel = new JLabel("Пока нет забронированных билетов");
             noTicketsLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
             noTicketsLabel.setForeground(new Color(107, 114, 128));
             noTicketsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -133,7 +133,7 @@ public class ProfileFrame extends JFrame {
             panel.add(noTicketsLabel);
             panel.add(Box.createVerticalGlue());
         } else {
-            for (Ticket ticket : userTickets) {
+            for (Ticket ticket : allTickets) {
                 Route route = dataService.findRouteById(ticket.getRouteId());
                 if (route != null) {
                     panel.add(createTicketCard(ticket, route));
@@ -141,11 +141,11 @@ public class ProfileFrame extends JFrame {
                 }
             }
         }
-        
+
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
+
         return scrollPane;
     }
     

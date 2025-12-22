@@ -8,6 +8,7 @@ import javax.swing.RowFilter;
 import java.awt.*;
 import java.util.Comparator;
 
+@SuppressWarnings("unchecked")
 public class ScheduleFrame extends JFrame {
     private JTable table;
     private DefaultTableModel model;
@@ -96,6 +97,7 @@ public class ScheduleFrame extends JFrame {
         });
     }
     
+    @SuppressWarnings("unchecked")
     private JScrollPane createScheduleTable() {
         String[] columns = {"№", "Откуда", "Куда", "Отправление", "Прибытие", "В пути", "Дни недели", "Цена", "Мест"};
         
@@ -180,26 +182,13 @@ public class ScheduleFrame extends JFrame {
         table.getColumnModel().getColumn(8).setPreferredWidth(60);
         
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
-        sorter.setComparator(5, new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                return Integer.compare(parseDurationMinutes(o1.toString()), parseDurationMinutes(o2.toString()));
-            }
-        });
-        sorter.setComparator(7, new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                return Integer.compare(parsePrice(o1.toString()), parsePrice(o2.toString()));
-            }
-        });
-        sorter.setComparator(8, new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                try {
-                    return Integer.compare(Integer.parseInt(o1.toString().trim()), Integer.parseInt(o2.toString().trim()));
-                } catch (NumberFormatException e) {
-                    return 0;
-                }
+        sorter.setComparator(5, (Comparator<Object>) (o1, o2) -> Integer.compare(parseDurationMinutes(o1.toString()), parseDurationMinutes(o2.toString())));
+        sorter.setComparator(7, (Comparator<Object>) (o1, o2) -> Integer.compare(parsePrice(o1.toString()), parsePrice(o2.toString())));
+        sorter.setComparator(8, (Comparator<Object>) (o1, o2) -> {
+            try {
+                return Integer.compare(Integer.parseInt(o1.toString().trim()), Integer.parseInt(o2.toString().trim()));
+            } catch (NumberFormatException e) {
+                return 0;
             }
         });
         table.setRowSorter(sorter);
