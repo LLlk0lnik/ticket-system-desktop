@@ -1,4 +1,3 @@
-import java.sql.*;
 import com.ticketvoyage.service.DataService;
 
 public class test_db {

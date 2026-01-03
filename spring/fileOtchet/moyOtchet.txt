@@ -1,0 +1,85 @@
+Отчёт по проекту "Система поиска билетов"
+
+Тип приложения и средства разработки
+Тип приложения: Десктопное приложение
+Используемые технологии:
+•	Язык программирования: Java (JDK 8+)
+•	Фреймворк: Java Swing (GUI)
+•	База данных: Файловая система (.dat файлы) – SQLLite 
+•	Инструменты: Javac, Git, Vs Code, Terminal, bash-скрипты для сборки
+
+Описание сценария прецендентат “Заказ Билетов”
+Актор: Пользователь
+Цель: Забронировать билет на подходящий рейс
+Предусловие: Пользователь авторизован в системе
+Основной поток:
+1)	Пользователь нажимает на поле «Поиск» на главной странице приложения
+2)	Система отображает форму поиска с полями: «Откуда», «Куда», «Дата и время отправления»
+3)	Пользователь заполняет все необходимые поля параметрами поездки
+4)	Пользователь нажимает кнопку «Найти»
+5)	Система выполняет поиск рейсов по заданным параметрам
+6)	Проверка: результаты найдены?
+a)	Нет → система отображает сообщение «Ничего не найдено» → пользователь изменяет параметры поиска → повторяет поиск (возврат к шагу 3)
+b)	Да → проверка: результатов много?
+c)	Да → пользователь выставляет фильтры (время отправления/цена/перевозчик/длительность) → система обновляет список результатов согласно фильтрам
+d)	Нет → переход к следующему шагу
+7)	Пользователь выбирает подходящий рейс из списка доступных вариантов
+8)	Пользователь нажимает кнопку «Забронировать» для выбранного рейса
+9)	Система отображает форму выбора места с графическим интерфейсом (схема расположения мест в виде интерактивных кнопок)
+10)	Пользователь выбирает конкретное место, нажимая на соответствующую кнопку в графическом интерфейсе
+11)	Пользователь заполняет форму ввода данных пассажира (поля: ФИО, номер документа, контактные данные)
+12)	Пользователь нажимает кнопку «Подтвердить бронирование»
+13)	Система обрабатывает заказ, сохраняет данные, отправляет подтверждение и электронный билет
+14)	После успешного бронирования система автоматически возвращает пользователя на предыдущую форму интерфейса (к списку доступных рейсов)
+Альтернативный поток:
+1)	Если выбранное место уже занято, система показывает сообщение и предлагает выбрать другое место
+2)	Если при бронировании возникают ошибки в данных пассажира, система отображает соответствующее сообщение и предлагает исправить данные
+3)	Если пользователь отменяет процесс бронирования, система возвращает его к просмотру списка рейсов
+ 
+Проект пользовательского интерфейса
+
+Для реализации сценария «Поиск и бронирование билетов» нужны следующие элементы интерфейса:
+Регистрация:
+
+Главный экран:
+ 
+ 
+Экран выбора места + заполняние данных о пассажире:
+
+ 
+
+
+ 
+
+4.	Программные классы 
+Программные классы, участвующие в реализации выбранного прецедента
+Концептуальные классы:
+•	User (Пользователь)
+o Атрибуты: userId, email, password, name, roleo Методы: getId(), getEmail(), getPassword(), getName(), getRole(), setId(), setEmail(), setPassword(), setName(), setRole()
+•	Route (Маршрут)
+o Атрибуты: routeId, from, to, stops, departureTime, arrivalTime, date, price, totalSeats, ticketso Методы: getBookedSeats(), getId(), getFrom(), getTo(), getStops(), getDepartureTime(), getArrivalTime(), getDate(), getPrice(), getTotalSeats(), getTickets(), соответствующие set методы
+•	Ticket (Билет)
+o Атрибуты: ticketId, userId, routeId, seatNumber, passengerName, passengerEmail, passengerPhone, status, createdAto Методы: getId(), getUserId(), getRouteId(), getSeatNumber(), getPassengerName(), getPassengerEmail(), getPassengerPhone(), getStatus(), getCreatedAt(), соответствующие set методы
+Служебные классы:
+•	DataService (Сервис доступа к данным)
+o Атрибуты: users (List<User>), routes (List<Route>), tickets (List<Ticket>), USERS_FILE, ROUTES_FILE, TICKETS_FILEo Методы: loadAllData(), initSampleData(), saveUsers(), saveRoutes(), saveTickets(),  findUserByEmail(email), addUser(user), getAllUsers(),  getAllRoutes(), findRouteById(routeId), addRoute(route),  addTicket(ticket), getUserTickets(userId), getAllTickets(),  cancelTicket(ticketId), isSeatAvailable(routeId, seatNumber)
+•	AuthService (Сервис аутентификации)
+o Атрибуты: dataService, currentUser (User)o Методы: login(email, password), register(email, password, name), logout(), getCurrentUser(), isAdmin()
+Интерфейсные классы (GUI):
+•	LoginFrame (Окно входа)
+o Атрибуты: authService, dataService, поля emailField, passwordField, nameField, режим login/registero Методы: initializeUI(), handleLogin(), handleRegister(), switchMode(), openMainFrame()
+•	MainFrame (Главное окно поиска билетов)
+o Атрибуты: authService, dataService, searchFromField, searchToField, searchDateField, routesPanel, sortComboBox, currentRouteso Методы: initializeUI(), createNavigationBar(), createContentPanel(),  createSearchPanel(), createFiltersPanel(), createResultsPanel(),  loadRoutes(), filterAndSortRoutes(), displayRoutes(routes), createRouteCard(route),  openBooking(route), showProfileView(), logout()
+•	BookingFrame (Окно бронирования)
+o Атрибуты: authService, dataService, route, selectedSeat, passengerNameField, passengerEmailField, passengerPhoneField, seatsPanelo Методы: initializeUI(), createRouteInfoPanel(), createSeatSelectionPanel(),  generateSeats(), selectSeat(seatNumber), createPassengerInfoPanel(),  bookTicket(), goBack()
+•	ProfileFrame (Окно «Мои билеты»)
+o Атрибуты: authService, dataServiceo Методы: initializeUI(), createNavigationBar(), createTicketsPanel(),  createTicketCard(ticket, route), getStatusText(status), getStatusColor(status),  cancelTicket(ticket), showSearchView(), logout()
+•	ScheduleFrame (Окно расписания рейсов)
+o Атрибуты: таблица расписания (JTable), фильтр направления (JComboBox), данные расписания (Object[][] data)o Методы: конструктор ScheduleFrame(), createScheduleTable(), настройка колонок и модели таблицы
+•	TicketVoyageApp (Демонстрационное окно без авторизации)
+o Атрибуты: поля поиска, панель маршрутов, кнопки фильтров и расписанияo Методы: конструктор TicketVoyageApp(), createNavigationBar(), createContentPanel(), createSearchPanel(), createFiltersPanel(), createResultsPanel(), createRouteCard(...)
+
+
+
+Диаграмма классов
+ 
